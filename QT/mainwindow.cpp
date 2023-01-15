@@ -72,12 +72,15 @@ void MainWindow::startScan()
     I_max_block.clear();
     O_max_block.clear();
     run_at=0;
+    is_startScan=true;
 
     sendFrame(QCanBusFrame(0x1ff,QByteArray()));
 }
 
 void MainWindow::starteeprom()
 {
+    is_startScan=false;// stop met een canlijst aan te maken
+
     timer->stop();
     restart_timer->stop();
     has_files=false;
@@ -276,13 +279,16 @@ bool MainWindow::process_Frame_scan(const QCanBusFrame &frame)
         //frame.payload().at(5) O_max_block
         //frame.payload().at(6) data1 == 00
         //frame.payload().at(7) data2 == 00
-        protocol_versie.append(frame.payload().at(1));
-        module_adres.append(frame.payload().at(2));
-        EE_IO_block.append(frame.payload().at(3));
-        I_max_block.append(frame.payload().at(4));
-        O_max_block.append(frame.payload().at(5));
+        if(is_startScan){
+            // maak canlijst
+            protocol_versie.append(frame.payload().at(1));
+            module_adres.append(frame.payload().at(2));
+            EE_IO_block.append(frame.payload().at(3));
+            I_max_block.append(frame.payload().at(4));
+            O_max_block.append(frame.payload().at(5));
 
-        timer->start(1000);
+            timer->start(1000);
+        }
     }
 
     return is_Frame;

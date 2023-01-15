@@ -34,6 +34,7 @@ private:
     int run_at=0;
     bool has_files=false;
     bool has_to_reset=false;
+    bool is_startScan=false;
 
      uint frameId;
     int adres;
